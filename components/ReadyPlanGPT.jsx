@@ -6,51 +6,44 @@ export default function ReadyPlanGPT() {
   const [plan, setPlan] = useState("");
 
   const generatePlan = async () => {
-    setLoading(true);
-    const prompt = `
-    أنشئ خطة مشروع بناءً على هذا الوصف: "${input}"
+  setLoading(true);
 
-    يجب أن تحتوي الخطة على:
-    1. ملخص تنفيذي
-    2. الأهداف
-    3. خطة العمل
-    4. الجدول الزمني
-    5. الموارد والميزانية
-    6. تحليل المخاطر
-    7. خاتمة
+  const prompt = `
+  أنشئ خطة مشروع بناءً على هذا الوصف: "${input}"
 
-    اكتبها باللغة العربية وبأسلوب مهني واضح.
-    `;
+  يجب أن تحتوي الخطة على:
+  1. ملخص تنفيذي
+  2. الأهداف
+  3. خطة العمل
+  4. الجدول الزمني
+  5. الموارد والميزانية
+  6. تحليل المخاطر
+  7. خاتمة
 
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
+  اكتبها باللغة العربية وبأسلوب مهني واضح.
+  `;
 
-    const data = await res.json();
-    setPlan(data.result);
-    setLoading(false);
-  };
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer sk-or-xxxxxxxxxxxxxxxxxxxxxxxxx", // ضع المفتاح هنا
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-4",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+    }),
+  });
 
-  return (
-    <div style={{ maxWidth: "700px", margin: "auto", padding: "20px", direction: "rtl", fontFamily: "Arial" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", textAlign: "center" }}>ReadyPlan - إنشاء خطة مشروع بالذكاء الاصطناعي</h1>
-      <textarea
-        placeholder="اكتب وصف مشروعك هنا..."
-        rows={5}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-      />
-      <button onClick={generatePlan} disabled={loading} style={{ background: "#3b82f6", color: "#fff", padding: "10px 20px", border: "none", borderRadius: "4px" }}>
-        {loading ? "جاري الإنشاء..." : "أنشئ خطتي الآن"}
-      </button>
-      {plan && (
-        <div style={{ whiteSpace: "pre-wrap", padding: "10px", marginTop: "20px", background: "#f0f0f0", textAlign: "right", borderRadius: "4px" }}>
-          {plan}
-        </div>
-      )}
-    </div>
-  );
-}
+  const data = await res.json();
+  setPlan(data.choices?.[0]?.message?.content || "⚠️ لم يتم التوليد.");
+  setLoading(false);
+};
+
+  
