@@ -27,7 +27,7 @@ export default function ReadyPlanGPT() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer sk-or-xxxxxxxxxxxxxxxxxxxxxxxxx", // ضع المفتاح هنا
+      Authorization: "Bearer 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", // ضع المفتاح هنا
     },
     body: JSON.stringify({
       model: "openai/gpt-4",
