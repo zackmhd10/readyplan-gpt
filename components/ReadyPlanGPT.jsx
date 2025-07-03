@@ -45,5 +45,6 @@ export default function ReadyPlanGPT() {
   setPlan(data.choices?.[0]?.message?.content || "⚠️ لم يتم التوليد.");
   setLoading(false);
 };
+}
 
   
